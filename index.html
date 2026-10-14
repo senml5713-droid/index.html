@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEN'SMP - Clan Wars & Tierlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #060913;
+            --card-bg: rgba(13, 18, 36, 0.85);
+            --border-neon: rgba(0, 240, 255, 0.3);
+            --cyan-glow: #00f0ff;
+            --purple-glow: #8a2be2;
+            --gold-glow: #ffb700;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(138, 43, 226, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.18) 0%, transparent 45%);
+            background-attachment: fixed;
+            padding: 24px 14px;
+        }
+        .container { max-width: 850px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 24px; }
+        .server-badge {
+            display: inline-block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--cyan-glow);
+            text-transform: uppercase;
+            padding: 5px 16px;
+            border: 1px solid var(--cyan-glow);
+            border-radius: 20px;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+            margin-bottom: 10px;
+            background: rgba(0, 240, 255, 0.05);
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--cyan-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+        }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; margin-top: 4px; font-weight: 600; }
+        .btn-rank-info {
+            display: inline-block;
+            margin-top: 14px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--cyan-glow);
+            color: var(--cyan-glow);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+        .btn-rank-info:hover {
+            background: var(--cyan-glow);
+            color: #000;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px);
+        }
+        .arena-system {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        .round-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-neon);
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        .round-box h4 { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--cyan-glow); margin-bottom: 4px; }
+        .round-box p { font-size: 0.85rem; font-weight: 700; }
+        .search-container { margin-bottom: 20px; }
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(8, 12, 24, 0.95);
+            border: 1px solid var(--border-neon);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.6);
+        }
+        .clans-grid { display: flex; flex-direction: column; gap: 16px; }
+        .clan-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-neon);
+            border-radius: 14px;
+            padding: 18px;
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+        }
+        .clan-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: linear-gradient(to bottom, var(--cyan-glow), var(--purple-glow));
+        }
+        .clan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-left: 6px; }
+        .clan-title { display: flex; align-items: center; gap: 12px; }
+        .clan-icon {
+            width: 44px; height: 44px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--cyan-glow);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+        }
+        .clan-name-box h2 { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; color: #fff; }
+        .clan-leader { font-size: 0.85rem; color: var(--text-muted); }
+        .clan-leader span { color: var(--cyan-glow); font-weight: 700; }
+        .tier-badge {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(100, 116, 139, 0.18);
+            color: var(--cyan-glow);
+            border: 1px solid var(--border-neon);
+            text-transform: uppercase;
+        }
+        .roster-section {
+            background: rgba(6, 9, 19, 0.65);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .roster-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .roster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .member-slot {
+            background: rgba(13, 18, 36, 0.85);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 6px 4px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .member-slot.filled { border-style: solid; border-color: var(--border-neon); color: #fff; font-weight: 700; }
+        .clan-footer { display: flex; justify-content: space-between; align-items: center; padding-left: 6px; }
+        .pts-value { font-family: 'Orbitron', sans-serif; font-size: 1.15rem; font-weight: 800; color: var(--cyan-glow); }
+        .pts-label { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* MODAL POP-UP */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(4, 6, 14, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: all 0.3s ease; padding: 16px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-container {
+            background: rgba(13, 18, 36, 0.95);
+            border: 1px solid var(--cyan-glow);
+            border-radius: 16px; max-width: 500px; width: 100%; padding: 24px;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3); transform: scale(0.9); transition: all 0.3s ease;
+        }
+        .modal-overlay.active .modal-container { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; }
+        .modal-header h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--cyan-glow); }
+        .close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+        .modal-section-title { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: var(--gold-glow); margin: 14px 0 8px 0; text-transform: uppercase; }
+        .modal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .modal-list li {
+            background: rgba(6, 9, 19, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px; padding: 10px 12px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+        }
+        .modal-list li .rank-name { font-family: 'Orbitron', sans-serif; font-weight: 700; }
+        .modal-list li .pts-req { color: var(--cyan-glow); font-weight: 800; font-family: 'Orbitron', sans-serif; }
+        .prize-row {
+            display: flex; justify-content: space-around; text-align: center;
+            background: rgba(255, 183, 0, 0.08); border: 1px dashed var(--gold-glow);
+            border-radius: 10px; padding: 12px; margin-top: 10px;
+        }
+        .prize-row div h4 { font-size: 0.75rem; color: var(--text-muted); font-family: 'Orbitron', sans-serif; }
+        .prize-row div p { font-size: 1.1rem; font-weight: 900; color: var(--gold-glow); font-family: 'Orbitron', sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="server-badge">SEN'SMP Official</div>
+            <h1>Clan Wars Dashboard</h1>
+            <p class="subtitle">3-Round Progressive Arena Tournament & Clan Tierlist</p>
+            <button class="btn-rank-info" id="openModalBtn">🏆 RANK DETAILS & PRIZE POOL</button>
+        </header>
+
+        <div class="arena-system">
+            <div class="round-box"><h4>ROUND 1</h4><p>💎 Diamond Gear</p></div>
+            <div class="round-box"><h4>ROUND 2</h4><p>🖤 Netherite Gear</p></div>
+            <div class="round-box"><h4>ROUND 3</h4><p>⚔️ Own Grind Gear</p></div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search Clan Name, Leader, or Member Gamer Tag...">
+        </div>
+
+        <div class="clans-grid" id="clansGrid"></div>
+    </div>
+
+    <div class="modal-overlay" id="rankModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>🏆 RANK GOALS & REWARDS</h3>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-section-title">📊 RANK POINTS GOALS</div>
+            <ul class="modal-list">
+                <li><span class="rank-name">👑 DOMINATOR</span><span class="pts-req">5,000 PTS</span></li>
+                <li><span class="rank-name">⚔️ WARLORD</span><span class="pts-req">4,000 PTS</span></li>
+                <li><span class="rank-name">🛡️ VANGUARD</span><span class="pts-req">3,000 PTS</span></li>
+                <li><span class="rank-name">⚡ CHALLENGER</span><span class="pts-req">2,000 PTS</span></li>
+                <li><span class="rank-name">🛡️ GUARDIAN</span><span class="pts-req">1,000 PTS</span></li>
+                <li><span class="rank-name">🔰 RECRUIT</span><span class="pts-req">500 PTS</span></li>
+            </ul>
+            <div class="modal-section-title">💰 TOURNAMENT COIN PRIZES</div>
+            <div class="prize-row">
+                <div><h4>🥇 1ST PLACE</h4><p>100 COINS</p></div>
+                <div><h4>🥈 2ND PLACE</h4><p>50 COINS</p></div>
+                <div><h4>🥉 3RD PLACE</h4><p>30 COINS</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const clansData = [
+            { id: 1, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 2, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 3, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 4, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 5, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 6, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 7, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 8, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 9, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] },
+            { id: 10, name: "Slot Available", leader: "Unassigned", points: 0, tier: "RECRUIT", members: ["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"] }
+        ];
+
+        const clansGrid = document.getElementById('clansGrid');
+        const searchInput = document.getElementById('searchInput');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const rankModal = document.getElementById('rankModal');
+
+        openModalBtn.addEventListener('click', () => rankModal.classList.add('active'));
+        closeModalBtn.addEventListener('click', () => rankModal.classList.remove('active'));
+        rankModal.addEventListener('click', (e) => { if (e.target === rankModal) rankModal.classList.remove('active'); });
+
+        function renderClans(filter = "") {
+            clansGrid.innerHTML = "";
+            const query = filter.toLowerCase();
+            const filteredClans = clansData.filter(clan => {
+                return clan.name.toLowerCase().includes(query) || 
+                       clan.leader.toLowerCase().includes(query) || 
+                       clan.members.some(m => m.toLowerCase().includes(query));
+            });
+
+            if (filteredClans.length === 0) {
+                clansGrid.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px; font-family: 'Orbitron', sans-serif;">NO CLANS OR MEMBERS FOUND</div>`;
+                return;
+            }
+
+            filteredClans.forEach(clan => {
+                const card = document.createElement('div');
+                card.className = 'clan-card';
+                const membersHTML = clan.members.map(member => `
+                    <div class="member-slot ${member.startsWith('Member') ? '' : 'filled'}">
+                        👤 ${member}
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="clan-header">
+                        <div class="clan-title">
+                            <div class="clan-icon">🛡️</div>
+                            <div class="clan-name-box">
+                                <h2>${clan.name}</h2>
+                                <div class="clan-leader">👑 Leader: <span>${clan.leader}</span></div>
+                            </div>
+                        </div>
+                        <div class="tier-badge">${clan.tier}</div>
+                    </div>
+                    <div class="roster-section">
+                        <div class="roster-title">
+                            <span>OFFICIAL ROSTER</span>
+                            <span>5 MEMBERS</span>
+                        </div>
+                        <div class="roster-grid">${membersHTML}</div>
+                    </div>
+                    <div class="clan-footer">
+                        <div class="pts-box">
+                            <span class="pts-value">${clan.points}</span>
+                            <span class="pts-label">Arena Points</span>
+                        </div>
+                    </div>
+                `;
+                clansGrid.appendChild(card);
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => renderClans(e.target.value));
+        renderClans();
+    </script>
+</body>
+</html>
